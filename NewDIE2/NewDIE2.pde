@@ -31,7 +31,7 @@ SoundFile interactSound;
 SoundFile reflectSound;
 
 Assets a1 = new Assets(false, 0, 0, 100, 100, 200, 200);//CIP,AX,AY,AW,AH
-Assets a2 = new Assets(false, 0, 100, 100, 100, 120, 120);
+Assets a2 = new Assets(false, 0, 100, 80, 80, 120, 120);
 Assets a3 = new Assets(false, 0, 200, 100, 100, 300, 300);
 Assets a4 = new Assets(false, 0, 300, 100, 100, 200, 200);
 
@@ -68,7 +68,7 @@ void draw() {
   scale(sclx, scly);
   pushMatrix();
   scale(-1, 1);
-  translate(-cam.width,0);
+  translate(-cam.width, 0);
   image(cam, 0, 0, cam.width, cam.height);
   popMatrix();
   if (time == true) {
@@ -77,11 +77,11 @@ void draw() {
 
   if (firstPress == true) {
     pica = loadImage("snap.png");
-      opencv = new OpenCV(this, "snap.png");
-  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
+    opencv = new OpenCV(this, "snap.png");
+    opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);
     pushMatrix();
-      scale(-1, 1);
-  translate(-cam.width,0);
+    scale(-1, 1);
+    translate(-cam.width, 0);
     image(pica, cam.width*1.5, 0, cam.width*1.5, cam.height*1.125); // IDK why 1.125 but it works
     popMatrix();
     topLayer.beginDraw();
@@ -157,14 +157,14 @@ class Assets {
 
     println(faces.length);
     for (int i = 0; i < faces.length; i++) {
-
-      rect(faces[i].x*0.5, faces[i].y*0.2, faces[i].width*0.5, faces[i].height*0.7);
+      noFill();
+      rect(faces[i].x*0.5, faces[i].y*0.4, faces[i].width*0.5, faces[i].height*0.8);
 
       if ((AssetX+AssetW/2) > faces[i].x*0.5 && (AssetX+AssetW/2) < faces[i].x*0.5 + faces[i].width*0.5 &&
-        (AssetY+AssetH/2) > faces[i].y*0.2 && (AssetY+AssetH/2) < (faces[i].y*0.2 + faces [i].height*0.7)) {
+        (AssetY+AssetH/2) > faces[i].y*0.3 && (AssetY+AssetH/2) < (faces[i].y*0.30 + faces [i].height*0.8)) {
         println("Scale");
-        AssetW = faces[i].width/2;
-        AssetH = faces[i].height/2;
+        AssetW = (faces[i].width/2)*(AssetScaleW/150);
+        AssetH = (faces[i].height/2)*(AssetScaleH/150);
       }
     }
   }
