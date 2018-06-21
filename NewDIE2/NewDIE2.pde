@@ -10,7 +10,7 @@ PImage img3;
 PImage img4;
 PImage descimg3;
 PImage pica;
-int scl = 2;
+int scl = 3;
 int sclx=scl;
 int scly=scl;
 int currentTime = 0;
@@ -26,25 +26,29 @@ boolean sendPress = false;
 boolean time = false;
 boolean cT = false;
 boolean detected = false;
+boolean one = false;
+boolean two = false;
+boolean three = false;
 SoundFile startSound;
 SoundFile interactSound;
 SoundFile reflectSound;
 
-Assets a1 = new Assets(false, 0, 0, 100, 100, 200, 200);//CIP,AX,AY,AW,AH
-Assets a2 = new Assets(false, 0, 100, 80, 80, 120, 120);
-Assets a3 = new Assets(false, 0, 200, 100, 100, 300, 300);
-Assets a4 = new Assets(false, 0, 300, 100, 100, 200, 200);
+Assets a1 = new Assets(false, 10, 0, 70, 100, 130, 130);//CIP,AX,AY,AW,AH
+Assets a2 = new Assets(false, 10, 90, 60, 80, 80, 80);
+Assets a3 = new Assets(false, 10, 180, 70, 100, 200, 200);
+Assets a4 = new Assets(false, 10, 270, 70, 100, 130, 130);
 
-Button cap = new Button(false, 600, 50, 30, 30, 1, 255, 0, 0);//P, BX, BY,BW,BH,T, colr,  colg, colb
-Button sav = new Button(false, 600, 100, 30, 30, 2, 0, 255, 0);
-Button send = new Button(false, 600, 150, 30, 30, 3, 0, 0, 255);
+Button cap = new Button(false, 500, 50, 100, 30, 1, 50, 200, 100, "Take Photo");//P, BX, BY,BW,BH,T, colr, colg, colb
+Button sav = new Button(false, 500, 100, 100, 30, 2, 250, 250, 120, "Save");
+Button send = new Button(false, 500, 150, 100, 30, 3, 100, 150, 250, "Reset");
+
 
 void setup () {
-  //fullScreen();
+  fullScreen();
 
-  size(displayWidth, displayHeight);
+  //size(displayWidth, displayHeight);
 
-  cam = new Capture(this, 640, 480);
+  cam = new Capture(this, width/3, height/3);
   cam.start();
   img=loadImage("hat.png");
   img2=loadImage("beard.png");
@@ -70,7 +74,9 @@ void draw() {
   scale(-1, 1);
   translate(-cam.width, 0);
   image(cam, 0, 0, cam.width, cam.height);
+  fill(100);
   popMatrix();
+  rect(0, 0, width/25, height);
   if (time == true) {
     timer(3000);
   }
@@ -85,7 +91,7 @@ void draw() {
     image(pica, cam.width*1.5, 0, cam.width*1.5, cam.height*1.125); // IDK why 1.125 but it works
     popMatrix();
     topLayer.beginDraw();
-    topLayer.fill(50, 100, 200, 200);
+    topLayer.fill(100);
     a1.update();
     a2.update();
     a3.update();
@@ -109,7 +115,7 @@ void draw() {
 }
 void drawAssets() {
   topLayer.clear();
-  topLayer.rect(0, 0, width/20, height);
+
   topLayer.image(img, a1.AssetX, a1.AssetY, a1.AssetW, a1.AssetH);
   topLayer.image(img2, a2.AssetX, a2.AssetY, a2.AssetW, a2.AssetH);
   topLayer.image(img3, a3.AssetX, a3.AssetY, a3.AssetW, a3.AssetH);
@@ -117,7 +123,7 @@ void drawAssets() {
   if (a3.AssetX > 100 && savePress ==true) {
     a3.CheckInPlace();
     if (a3.CursorInPlace ==true) {
-      topLayer.image(descimg3, a3.AssetX-100, a3.AssetY, 600, 100 );
+      topLayer.image(descimg3, a3.AssetX-100, a3.AssetY, 600, 100);
     }
   }
 }
@@ -130,6 +136,10 @@ void mousePressed () {
   cap.pressed();
   sav.pressed();
   send.pressed();
+  a1.CheckInPlace();
+  a2.CheckInPlace();
+  a3.CheckInPlace();
+  a4.CheckInPlace();
 }
 //mirroring
 //assets+scaling
@@ -158,20 +168,21 @@ class Assets {
     println(faces.length);
     for (int i = 0; i < faces.length; i++) {
       noFill();
-      rect(faces[i].x*0.5, faces[i].y*0.4, faces[i].width*0.5, faces[i].height*0.8);
+      rect(faces[i].x/3, faces[i].y*0.2, faces[i].width/3, faces[i].height*0.6);
 
-      if ((AssetX+AssetW/2) > faces[i].x*0.5 && (AssetX+AssetW/2) < faces[i].x*0.5 + faces[i].width*0.5 &&
-        (AssetY+AssetH/2) > faces[i].y*0.3 && (AssetY+AssetH/2) < (faces[i].y*0.30 + faces [i].height*0.8)) {
-        println("Scale");
-        AssetW = (faces[i].width/2)*(AssetScaleW/150);
-        AssetH = (faces[i].height/2)*(AssetScaleH/150);
+      if (AssetX > width/25) {
+        if ((AssetX+AssetW/3) > faces[i].x/3 && (AssetX+AssetW/3) < faces[i].x/3 + faces[i].width/3 &&
+          (AssetY+AssetH/3) > faces[i].y*0.2 && (AssetY+AssetH/2) < (faces[i].y*0.2 + faces [i].height*0.6)) {
+          println("Scale");
+          AssetW = (faces[i].width/2)*(AssetScaleW/150);
+          AssetH = (faces[i].height/2)*(AssetScaleH/150);
+        }
       }
     }
   }
 
   void update() {
     if (mousePressed ==true) {
-      CheckInPlace();
       if (CursorInPlace == true) {
         mouseDragged();
       }
@@ -188,10 +199,8 @@ class Assets {
       && mouseY > AssetY*scl && mouseY < AssetY*scl +AssetH*scl) {//if cursor in boundingbox of Asset
       CursorInPlace = true;
     }
-    //else {
-    //CursorInPlace = false;
-    // }
   }
+
   void mouseDragged() {
     AssetX = (mouseX - AssetW)/sclx;
     AssetY= (mouseY -AssetH)/scly;
@@ -212,11 +221,13 @@ class Assets {
   //}
 } //end of assetclass
 
+
 class Button {
   boolean buttonPressed;
   float ButtonX, ButtonY, ButtonW, ButtonH, Type, colr, colg, colb;
   color c;
-  Button(boolean P, float BX, float BY, float BW, float BH, float T, float cr, float cg, float cb) {
+  String S;
+  Button(boolean P, float BX, float BY, float BW, float BH, float T, float cr, float cg, float cb, String s) {
     buttonPressed = P;
     ButtonX = BX;
     ButtonY = BY;
@@ -227,6 +238,7 @@ class Button {
     colg=cg;
     colb=cb;
     c = color (cr, cg, cb);
+    S=s;
   }
 
   void pressed() {
@@ -251,8 +263,10 @@ class Button {
 
   void drawButtons() {
     fill(c);
-    ellipseMode(CORNER);
-    ellipse(ButtonX, ButtonY, ButtonW, ButtonH);
+    //ellipseMode(CORNER);
+    rect(ButtonX, ButtonY, ButtonW, ButtonH);
+    fill(70);
+    text(S, ButtonX+10, ButtonY+ButtonH/4,ButtonX+ButtonW,ButtonY+ButtonH);
   }
 } //end of buttonclass
 
@@ -295,7 +309,7 @@ int timer(int timerLength) {
     firstPress = true;
     startSound.stop();
     interactSound.play();
-    //println("thegameison!");
+    println("thegameison!");
     return 0;
   }
 }
