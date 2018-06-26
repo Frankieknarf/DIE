@@ -1,3 +1,4 @@
+import processing.sound.*;
 import gab.opencv.*;
 import processing.video.*;
 import java.awt.*;
@@ -16,8 +17,15 @@ int qboxY = 0;
 PImage img1, img2, img3, img4, img5, img6;
 
 IntList order;
-String[] text = {"Who is the richest?", "Who is most ambituous?", "Who is most academic?", "Who is most fashionable?", "Who has the highest status?", "Who is most self-confident?"};
+String[] text = {"It's not nice to scratch someone out of a painting.. Choose wisely", 
+"Mirror, mirror, on the wall. Who's the fairest of them all?", 
+"Who would fit best in the royal family?", 
+"Who thinks he/she is the smartest?", 
+"Who thinks he/she is the most fashionable?", 
+"Who wants to live forever?"};
 PImage[] images = {img1, img2, img3, img4, img5, img6};
+Assets[] assetArray = new Assets[6];
+SoundFile BackGroundSound;
 boolean start = false;
 boolean start1 = false;
 boolean players = false;
@@ -39,49 +47,52 @@ void setup() {
   topLayer2 = createGraphics(width, height);
   initialize();
 
-  images[0] = loadImage("pineapple.png");
-  images[1] = loadImage("piano.png");
-  images[2] = loadImage("books.png");
-  images[3] = loadImage("hat.png");
-  images[4] = loadImage("dog.png");
-  images[5] = loadImage("mirror.png");
+  img1 = loadImage("scratch.png");
+  img2 = loadImage("mirror.png");
+  img3 = loadImage("piano.png");
+  img4 = loadImage("books.png");
+  img5 = loadImage("hat.png");
+  img6 = loadImage("frame.png");
 
-  video = new Capture(this, width, height);
+BackGroundSound = new SoundFile(this, "Background.mp3");
+  assetArray[0] = new Assets(img1, 0, height/10*3, 700, 700);
+  assetArray[1] = new Assets(img2, width/5, height/4, 200, 300);
+  assetArray[2] = new Assets(img3, 0, height/10*7, 400, 400);
+  assetArray[3] = new Assets(img4, width/6, height/10*7, 300, 300);
+  assetArray[4] = new Assets(img5, width/13, height/3, 400, 400);
+  assetArray[5] = new Assets(img6, 0, height/10*3, 600, 600);
 
-  video.start();
+  BackGroundSound.play(); 
+//  video = new Capture(this, width, height);
+
+ // video.start();
 }
 
 void draw() {
- //  println("aaaaah"+qnum);
-  if (qnum>=0){
-  if (video.available() == true) {
-    video.read();
+  //  println("aaaaah"+qnum);
+  if (qnum>=0) {
+//    if (video.available() == true) {
+//      video.read();
+//    }
 
-  }
 
- 
     noFill();
     noStroke();
-    pushMatrix();
+ /*   pushMatrix();
     translate(width, 0);
     scale(-1, 1);
     image(video, 0, 0);
     popMatrix();
-
+*/
     topLayer.beginDraw(); 
-
     topLayer.fill(50, 100, 200, 200);
     topLayer.strokeWeight(1);
-
-   
-
     mouseLocation();
-
     topLayer.endDraw();
     image(topLayer2, 0, 0);
     image(topLayer, 0, 0);
-  
-}}
+  }
+}
 
 void captureEvent(Capture c) {
   c.read();
@@ -91,20 +102,21 @@ void initialize() {
   order.shuffle();
   println(order); 
   qnum=-1;
-   topLayer2.beginDraw();
+  topLayer2.beginDraw();
   topLayer2.clear();
-      textAlign(CENTER);
-    textSize(180);
-    background(100);
-    text("START", width/2, height/2);
-   mouseLocation();
+  textAlign(CENTER);
+  textSize(180);
+  background(100);
+  text("START", width/2, height/2);
+  mouseLocation();
+
 }
 
 void quizScene() {
 
-      topLayer2.beginDraw();
-      threePlayers();
-      topLayer2.endDraw();
+  topLayer2.beginDraw();
+  threePlayers();
+  topLayer2.endDraw();
   topLayer.beginDraw();
   topLayer.fill(100);
   topLayer.textSize(40);
@@ -122,11 +134,10 @@ void quizQuestions() {  //show the randomized order
     topLayer.text(text[order.get(qnum)], 20, 70);
   } else {
     println("you reached the end");
-    topLayer.text("you reached the end of the list,reshuffling", 20, 70); 
-    initialize();
+    topLayer.text("you reached the end of the list,reshuffling", 20, 70);
+    //initialize();
   }
   topLayer.endDraw();
-    
 }
 
 void mouseLocation() {
@@ -145,42 +156,31 @@ void mouseLocation() {
 }
 
 void mousePressed() {
- // mouseLocation();
+  // mouseLocation();
   quizScene();
-  
+
   println("woot");
 
   topLayer2.beginDraw();
-  if (qnum >=0) {
+  if (qnum >=0 && qnum < order.size()) {
+    println("qnum = "+qnum);
     if (hover == 3) {
-      //if (count1 == 0) {
-      //object goes to player 1     
-      topLayer2.image(images[order.get(qnum)], 10, height/10*7, 200, 200);
-     /* count1 = 1; 
-      } else if (count 1 == 1) {
-      topLayer2.image(images[order.get(qnum-1)], 10, height/10*7, 200, 200);*/
-      
-      
+      Assets a1 = assetArray[order.get(qnum)];
+      topLayer2.image(a1.image, a1.xpos, a1.ypos, a1.owidth, a1.oheight);
     } else if (hover == 2) {
-      //object goes to player 2
-      //if (place2 = false) {
-      println("player2");
-      topLayer2.image(images[order.get(qnum)], width/3+10, height/10*8, 200, 200);
-     // place2 = true;
-      
+      Assets a1 = assetArray[order.get(qnum)];
+      topLayer2.image(a1.image, a1.xpos+width/3, a1.ypos, a1.owidth, a1.oheight);
     } else {
-      //object goes to player 3
-      println("player3");
-      //if (place3 = false) {
-      topLayer2.image(images[order.get(qnum)], width/3*2+10, height/10*8, 200, 200);
-    //  place3 = true;
-      
+      Assets a1 = assetArray[order.get(qnum)];
+      topLayer2.image(a1.image, a1.xpos+width/3*2, a1.ypos, a1.owidth, a1.oheight);
     }
+  }else if(qnum > order.size()){
+  initialize();
+  qnum--;
   }
   topLayer2.endDraw();
   qnum++;
-quizQuestions();
-  
+  quizQuestions();
 }
 
 void threePlayers() {
@@ -196,4 +196,20 @@ void threePlayers() {
   topLayer2.text("Player 1", width/20, height/10*2);
   topLayer2.text("Player 2", width/20*8, height/10*2);
   topLayer2.text("Player 3", width/20*15, height/10*2);
+}
+
+class Assets {
+  PImage image;
+  int xpos; 
+  int ypos; 
+  int owidth; 
+  int oheight;
+
+  Assets(PImage im, int xp, int yp, int ow, int oh) {
+    image = im;
+    xpos = xp;
+    ypos = yp;
+    owidth = ow;
+    oheight = oh;
+  }
 }
