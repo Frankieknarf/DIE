@@ -19,11 +19,11 @@ PImage img1, img2, img3, img4, img5, img6;
 
 IntList order;
 String[] text = {"It's not nice to scratch someone out of a painting..", 
-"Mirror, mirror, on the wall. Who's the fairest of them all?", 
-"Who would fit best in the royal family?", 
-"Who thinks he/she is the smartest?", 
-"Who thinks he/she is the most fashionable?", 
-"Who wants to live forever?"};
+  "Mirror, mirror, on the wall. Who's the fairest of them all?", 
+  "Who would fit best in the royal family?", 
+  "Who thinks he/she is the smartest?", 
+  "Who thinks he/she is the most fashionable?", 
+  "Who wants to live forever?"};
 PImage[] images = {img1, img2, img3, img4, img5, img6};
 Assets[] assetArray = new Assets[6];
 SoundFile BackGroundSound;
@@ -44,11 +44,11 @@ void setup() {
   order.append(3);
   order.append(4);
   order.append(5);
-  //order.append(6);
 
-font = createFont("font.ttf",50);
-textFont(font);
-  textMode(CORNER);
+
+  font = createFont("font.ttf", 50);
+  textFont(font);
+
   topLayer = createGraphics(width, height);
   topLayer2 = createGraphics(width, height);
   initialize();
@@ -60,7 +60,7 @@ textFont(font);
   img5 = loadImage("hat.png");
   img6 = loadImage("frame.png");
 
-BackGroundSound = new SoundFile(this, "Background.mp3");
+  BackGroundSound = new SoundFile(this, "Background.mp3");
   assetArray[0] = new Assets(img1, 0, height/10*3, 700, 700);
   assetArray[1] = new Assets(img2, width/5, height/4, 200, 300);
   assetArray[2] = new Assets(img3, 0, height/10*7, 400, 400);
@@ -69,30 +69,30 @@ BackGroundSound = new SoundFile(this, "Background.mp3");
   assetArray[5] = new Assets(img6, 0, height/10*3, 600, 600);
 
   BackGroundSound.loop(); 
-  video = new Capture(this, 1600,1200 );
+  video = new Capture(this, 1600, 1200 );
 
- video.start();
+  video.start();
 }
 
 void draw() {
   //  println("aaaaah"+qnum);
   if (qnum>=0) {
-   if (video.available() == true) {
+    if (video.available() == true) {
       video.read();
     }
 
 
     noFill();
     noStroke();
-   pushMatrix();
+    pushMatrix();
     translate(width, 0);
     scale(-1, 1);
     image(video, 0, 0);
     popMatrix();
 
     topLayer.beginDraw(); 
-    
-//font = createFont("font.ttf",50);
+
+
 
     topLayer.fill(50, 100, 200, 200);
     topLayer.strokeWeight(1);
@@ -109,10 +109,8 @@ void captureEvent(Capture c) {
 
 void initialize() {
   order.shuffle();
-  println(order); 
+  // println(order); 
   qnum=-1;
-//  topLayer.beginDraw();
-//  topLayer.clear();
   topLayer.beginDraw();
   topLayer.endDraw();
   topLayer2.beginDraw();
@@ -122,7 +120,6 @@ void initialize() {
   background(100);
   text("START", width/2, height/2);
   mouseLocation();
-
 }
 
 void quizScene() {
@@ -145,17 +142,15 @@ void quizQuestions() {  //show the randomized order
   topLayer.fill(255);
   topLayer.textSize(45);
   if (order.size()>qnum &&qnum>=0) {
-    println("osize"+order.size()+"sadgf"+qnum);
+    //   println("osize"+order.size()+"sadgf"+qnum);
     topLayer.text(text[order.get(qnum)], 20, 70);
   } else {
-    println("you reached the end");
-    topLayer.fill(200,50,50);
-  topLayer.rect(0, 0, width, height/8);
+    //    println("you reached the end");
+    topLayer.fill(200, 50, 50);
+    topLayer.rect(0, 0, width, height/8);
     topLayer.fill(255);
     topLayer.text("Click again to start over!", 20, 70);
-                                     //show picture of the end
-    
-    //initialize();
+    //show picture of the end
   }
   topLayer.endDraw();
 }
@@ -177,14 +172,10 @@ void mouseLocation() {
 
 void mousePressed() {
 
-  // mouseLocation();
   quizScene();
-
-  println("woot");
-
   topLayer2.beginDraw();
   if (qnum >=0 && qnum < order.size()) {
-    println("qnum = "+qnum);
+    //  println("qnum = "+qnum);
     if (hover == 3) {
       Assets a1 = assetArray[order.get(qnum)];
       topLayer2.image(a1.image, a1.xpos, a1.ypos, a1.owidth, a1.oheight);
@@ -195,9 +186,9 @@ void mousePressed() {
       Assets a1 = assetArray[order.get(qnum)];
       topLayer2.image(a1.image, a1.xpos+width/3*2, a1.ypos, a1.owidth, a1.oheight);
     }
-  }else if(qnum > order.size()){
-  initialize();
-  qnum--;
+  } else if (qnum > order.size()) {
+    initialize();
+    qnum--;
   }
   topLayer2.endDraw();
   qnum++;
