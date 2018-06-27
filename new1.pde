@@ -63,27 +63,27 @@ BackGroundSound = new SoundFile(this, "Background.mp3");
   assetArray[5] = new Assets(img6, 0, height/10*3, 600, 600);
 
   BackGroundSound.play(); 
-//  video = new Capture(this, width, height);
+  video = new Capture(this, 1600,1200 );
 
- // video.start();
+ video.start();
 }
 
 void draw() {
   //  println("aaaaah"+qnum);
   if (qnum>=0) {
-//    if (video.available() == true) {
-//      video.read();
-//    }
+   if (video.available() == true) {
+      video.read();
+    }
 
 
     noFill();
     noStroke();
- /*   pushMatrix();
+   pushMatrix();
     translate(width, 0);
     scale(-1, 1);
     image(video, 0, 0);
     popMatrix();
-*/
+
     topLayer.beginDraw(); 
     topLayer.fill(50, 100, 200, 200);
     topLayer.strokeWeight(1);
@@ -102,6 +102,10 @@ void initialize() {
   order.shuffle();
   println(order); 
   qnum=-1;
+//  topLayer.beginDraw();
+//  topLayer.clear();
+  topLayer.beginDraw();
+  topLayer.endDraw();
   topLayer2.beginDraw();
   topLayer2.clear();
   textAlign(CENTER);
@@ -134,7 +138,12 @@ void quizQuestions() {  //show the randomized order
     topLayer.text(text[order.get(qnum)], 20, 70);
   } else {
     println("you reached the end");
-    topLayer.text("you reached the end of the list,reshuffling", 20, 70);
+    topLayer.fill(200,50,50);
+  topLayer.rect(0, 0, width, height/8);
+    topLayer.fill(255);
+    topLayer.text("Click again to start over!", 20, 70);
+                                     //show picture of the end
+    
     //initialize();
   }
   topLayer.endDraw();
